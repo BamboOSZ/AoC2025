@@ -42,16 +42,18 @@ func main() {
 		}
 
 		switch direction {
-		case 'L':
-			dial = TurnLeft(dial, dist)
-			if dial == 0 {
-				total++
-			}
 		case 'R':
-			dial = TurnRight(dial, dist)
-			if dial == 0 {
-				total++
+			// Count how many times we cross/land on 0
+			total += (dial + dist) / (dialMax + 1)
+			dial = (dial + dist) % (dialMax + 1)
+
+		case 'L':
+			// Count how many times we cross/land on 0
+			if dist >= dial {
+				// We're going negative, so we wrap around
+				total += (dist-dial)/(dialMax+1) + 1
 			}
+			dial = ((dial-dist)%(dialMax+1) + (dialMax + 1)) % (dialMax + 1)
 		}
 
 		fmt.Printf("Dial: %d, Total: %d\n", dial, total)
@@ -59,18 +61,3 @@ func main() {
 
 	fmt.Printf("Total number of 0 is %d\n", total)
 }
-
-func TurnRight(dial, distance int) int {
-	var newDial int = (dial + distance) % (dialMax + 1)
-	return newDial
-}
-
-func TurnLeft(dial, distance int) int {
-	var newDial int = (dial - distance)
-	if newDial < 0 {
-		newDial += (dialMax + 1)
-	}
-	newDial = newDial % (dialMax + 1)
-	return newDial
-}
-
