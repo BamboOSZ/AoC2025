@@ -17,47 +17,47 @@ func main() {
 	var dial int = 50
 	var total int = 0
 
-	// read file
-	input, err := os.ReadFile("input.txt")
+	input, err := os.ReadFile("input_d1p2.txt")
 	if err != nil {
 		panic(err)
 	}
 
-	// split input into lines
 	lines := strings.Split(string(input), "\n")
 
-	// process each line
 	for _, line := range lines {
-		line = strings.TrimSpace(line) // remove \r, \n, and other whitespace
-		// split line into instructions
-		direction := line[0] // gets first byte/character
-		distance := line[1:] // remaining string as distance
+		line = strings.TrimSpace(line)
+		direction := line[0]
+		distance := line[1:]
 		dist, err := strconv.Atoi(distance)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("Direction: %c, Distance: %d\n", direction, dist)
-		if err != nil {
-			continue // skip invalid instructions
-		}
+		fmt.Printf("move Dial: %d, in Direction: %c, by Distance: %d\n", dial, direction, dist)
+
+		zerosCrossed := 0
 
 		switch direction {
 		case 'R':
-			// Count how many times we cross/land on 0
-			total += (dial + dist) / (dialMax + 1)
+			zerosCrossed = (dial + dist) / (dialMax + 1)
 			dial = (dial + dist) % (dialMax + 1)
 
 		case 'L':
-			// Count how many times we cross/land on 0
 			if dist >= dial {
-				// We're going negative, so we wrap around
-				total += (dist-dial)/(dialMax+1) + 1
+				if dial != 0 {
+					zerosCrossed++
+				}
+
+				zerosCrossed += (dist - dial) / (dialMax + 1)
 			}
 			dial = ((dial-dist)%(dialMax+1) + (dialMax + 1)) % (dialMax + 1)
 		}
 
-		fmt.Printf("Dial: %d, Total: %d\n", dial, total)
+		fmt.Printf("Zeros crossed: %d\n", zerosCrossed)
+
+		total += zerosCrossed
+
+		fmt.Printf("Dial after move: %d, Total zeros: %d\n", dial, total)
 	}
 
-	fmt.Printf("Total number of 0 is %d\n", total)
+	fmt.Printf("Final Total number of zeros crossed is %d\n", total)
 }
