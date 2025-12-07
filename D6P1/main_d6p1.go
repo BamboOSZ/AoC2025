@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -18,10 +19,43 @@ func main() {
 
 	total := 0
 
-	for _, line := range lines {
-		_ = line
+	table := [][]int{}
+	for i := 0; i < len(lines)-1; i++ {
+		line := strings.Fields(lines[i])
+		tab := []int{}
+		for j := 0; j < len(line); j++ {
+			val, _ := strconv.Atoi(line[j])
+			tab = append(tab, val)
+		}
+
+		table = append(table, tab)
+	}
+
+	operations := strings.Fields(lines[len(lines)-1])
+
+	for x := 0; x < len(operations); x++ {
+		if operations[x] == "*" {
+			opTotal := 1
+			for y := 0; y < len(table); y++ {
+				opTotal *= table[y][x]
+			}
+
+			fmt.Println("Operation: ", operations[x], "Total: ", opTotal)
+
+			total += opTotal
+		}
+
+		if operations[x] == "+" {
+			opTotal := 0
+			for y := 0; y < len(table); y++ {
+				opTotal += table[y][x]
+			}
+
+			fmt.Println("Operation: ", operations[x], "Total: ", opTotal)
+
+			total += opTotal
+		}
 	}
 
 	fmt.Println("Total: ", total)
 }
-
