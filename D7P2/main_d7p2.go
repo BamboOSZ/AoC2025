@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	fmt.Println("Day 7 Part 1")
+	fmt.Println("Day 7 Part 2")
 
-	input, err := os.ReadFile("input_d7p2_s.txt")
+	input, err := os.ReadFile("input_d7p2.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -41,6 +41,12 @@ func main() {
 			if table[y][x] == '^' && table[y-1][x] == '|' {
 				paths[y][x] = paths[y-1][x]
 				table[y][x-1] = '|'
+
+				// Check if the right cell would have received paths from above
+				// before we overwrite it with '|'
+				if table[y][x+1] == '.' && table[y-1][x+1] == '|' {
+					paths[y][x+1] += paths[y-1][x+1]
+				}
 				table[y][x+1] = '|'
 
 				paths[y][x-1] += paths[y][x]
